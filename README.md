@@ -1,16 +1,18 @@
-# Chat Application
+# WebSocket Chat Application
 
-This is a simple chat application built using Flask and Flask-SocketIO. It stores messages in a HashMap where each user is a key, and their messages are stored as a list of values.
+This is a real-time chat application built using Node.js and WebSocket technology. It allows users to join chat rooms, send messages, and interact with other users in real-time.
 
 ## Features
-- Send messages via HTTP POST requests.
-- Retrieve all messages sent by a specific user.
+- Real-time messaging with WebSocket
+- Join and create chat rooms
+- Message broadcasting to all users in a room
+- Optional message deletion and editing
 
 ## Setup
 
 ### Prerequisites
-- Python 3.x
-- pip (Python package installer)
+- Node.js
+- npm (Node package manager)
 
 ### Installation
 1. Clone the repository:
@@ -21,28 +23,24 @@ This is a simple chat application built using Flask and Flask-SocketIO. It store
    ```bash
    cd chatapp
    ```
-3. Install the required packages:
+3. Install the dependencies:
    ```bash
-   pip install -r requirements.txt
+   npm install
    ```
 
-### Running the Application
-To start the server, run:
-```bash
-python app.py
-```
-
-The server will be running at `http://localhost:5000/`.
-
-### Testing
-To run the tests, execute:
-```bash
-python -m unittest test_app.py
-```
-
 ## Usage
-- **Send a Message**: Use the `/send_message` endpoint with a JSON body containing `user` and `message`.
-- **Retrieve Messages**: Use the `/get_all_messages` endpoint with a query parameter `user` to get all messages sent by that user.
+
+1. Start the server:
+   ```bash
+   npm start
+   ```
+2. Open `join_room.html` in a web browser to join chat rooms and start chatting.
+
+## Technologies Used
+- Node.js
+- WebSocket (`ws` library)
+- Express
+- CORS
 
 ## License
 This project is licensed under the MIT License.

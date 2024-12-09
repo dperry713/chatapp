@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Chat Room</title>
+</head>
+<body>
+    <h1>Join a Chat Room</h1>
+    <input type="text" id="roomName" placeholder="Enter room name">
+    <button onclick="joinRoom()">Join Room</button>
+
+    <div id="chat">
+        <input type="text" id="message" placeholder="Enter message">
+        <button onclick="sendMessage()">Send</button>
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+        const messagesDiv = document.getElementById('messages');
+
+        socket.onopen = function() {
+            console.log('Connected to the server');
+        };
+
+        function joinRoom() {
+            const roomName = document.getElementById('roomName').value;
+            if (roomName) {
+                socket.send(JSON.stringify({ type: 'join', room: roomName }));
+            }
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            if (message) {
+                socket.send(JSON.stringify({ type: 'message', message }));
+                document.getElementById('message').value = '';
+            }
+        }
+
+        function deleteMessage(messageId) {
+            socket.send(JSON.stringify({ type: 'delete', messageId }));
+        }
+
+        function editMessage(messageId, newContent) {
+            socket.send(JSON.stringify({ type: 'edit', messageId, newContent }));
+        }
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.type === 'message') {
+                const message = document.createElement('div');
+                message.id = data.messageId;
+                message.textContent = data.content;
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.onclick = () => deleteMessage(data.messageId);
+
+                const editBtn = document.createElement('button');
+                editBtn.textContent = 'Edit';
+                editBtn.onclick = () => {
+                    const newContent = prompt('Edit your message:', data.content);
+                    if (newContent) {
+                        editMessage(data.messageId, newContent);
+                    }
+                };
+
+                message.appendChild(deleteBtn);
+                message.appendChild(editBtn);
+
+                messagesDiv.appendChild(message);
+            } else if (data.type === 'delete') {
+                const msgToDelete = document.getElementById(data.messageId);
+                if (msgToDelete) {
+                    msgToDelete.remove();
+                }
+            } else if (data.type === 'edit') {
+                const msgToEdit = document.getElementById(data.messageId);
+                if (msgToEdit) {
+                    msgToEdit.firstChild.textContent = data.newContent;
+                }
+            }
+        };
+
+        socket.onclose = function() {
+            console.log('Disconnected from the server');
+        };
+    </script>
+</body>
+</html>
