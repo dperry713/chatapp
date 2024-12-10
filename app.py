@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
@@ -9,7 +9,7 @@ message_storage = {}
 
 @app.route('/')
 def index():
-    return "Chat Application is running!"
+    return render_template('join_room.html')
 
 @app.route('/send_message', methods=['POST'])
 def send_message():
