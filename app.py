@@ -7,6 +7,10 @@ CORS(app)
 
 socketio = SocketIO(app)
 
+@app.route('/')
+def index():
+    return render_template('join_room.html')
+
 @socketio.on('connect')
 def handle_connect():
     print('User connected')

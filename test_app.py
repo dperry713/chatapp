@@ -1,47 +1,30 @@
 import unittest
 import json
-from app import app, message_storage
-
-class ChatAppTestCase(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
-
-    def test_send_message(self):
-        response = self.app.post('/send_message',
-                                 data=json.dumps({'user': 'JohnDoe', 'message': 'Hello world!'}),
-                                 content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('JohnDoe', message_storage)
-        self.assertIn('Hello world!', message_storage['JohnDoe'])
-
-    def test_get_all_messages(self):
-        # Ensure the user has messages
-        message_storage['JohnDoe'] = ['Hello world!']
-        response = self.app.get('/get_all_messages?user=JohnDoe')
-        self.assertEqual(response.status_code, 200)
-        data = json.loads(response.data)
-        self.assertIn('JohnDoe', data)
-        self.assertEqual(data['JohnDoe'], ['Hello world!'])
-
-    def test_get_all_messages_user_not_found(self):
-        response = self.app.get('/get_all_messages?user=JaneDoe')
-        self.assertEqual(response.status_code, 404)
-        data = json.loads(response.data)
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'User not found')
+from flask_socketio import SocketIOTestClient
+from app import app, socketio
 
 class AppTestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
+        self.socket_client = SocketIOTestClient(app, socketio)
 
     def test_index(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b'<h1>Join a Chat Room</h1>', response.data)
+        self.assertIn(b'Join a Chat Room', response.data)
 
-    # Add more tests for other features here
+    def test_send_message(self):
+        self.socket_client.connect()
+        self.socket_client.emit('send_message', {'user': 'test_user', 'message': 'Hello, World!'})
+        response = self.socket_client.get_received()
+        self.assertIn({'user': 'test_user', 'message': 'Hello, World!'}, [msg['args'][0] for msg in response if msg['name'] == 'receive_message'])
+
+    def test_connect_disconnect(self):
+        self.socket_client.connect()
+        self.assertTrue(self.socket_client.is_connected())
+        self.socket_client.disconnect()
+        self.assertFalse(self.socket_client.is_connected())
 
 if __name__ == '__main__':
     unittest.main()

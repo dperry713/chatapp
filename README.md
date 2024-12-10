@@ -1,45 +1,41 @@
-# WebSocket Chat Application
+# Chat Application
 
-This is a real-time chat application built using Node.js and WebSocket technology. It allows users to join chat rooms, send messages, and interact with other users in real-time.
+## Project Overview
+This is a web-based real-time chat application built using Flask and WebSocket technology. The application allows users to join chat rooms and communicate in real-time.
 
 ## Features
-- Real-time messaging with WebSocket
-- Join and create chat rooms
-- Message broadcasting to all users in a room
-- Optional message deletion and editing
+- **WebSocket Integration**: Full-duplex communication for real-time messaging.
+- **Chat Room Functionality**: Users can create and join chat rooms.
+- **Message Sending and Receiving**: Users can send messages that are broadcast to all participants in the room.
+- **User Connection Management**: Logs user connections and disconnections.
 
-## Setup
-
-### Prerequisites
-- Node.js
-- npm (Node package manager)
-
-### Installation
+## Installation Instructions
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```bash
+   git clone <repository_url>
    cd chatapp
    ```
-3. Install the dependencies:
+2. Install the required packages:
    ```bash
-   npm install
+   pip install -r requirements.txt
    ```
 
 ## Usage
-
-1. Start the server:
+1. Run the application:
    ```bash
-   npm start
+   python app.py
    ```
-2. Open `join_room.html` in a web browser to join chat rooms and start chatting.
+2. Open your web browser and navigate to `http://localhost:5000` to access the chat application.
+
+## Testing Instructions
+To run the tests, execute the following command:
+```bash
+python -m unittest test_app.py
+```
 
 ## Technologies Used
-- Node.js
-- WebSocket (`ws` library)
-- Express
+- Flask
+- WebSocket
 - CORS
 
 ## License
